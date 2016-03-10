@@ -3,6 +3,7 @@ __author__ = 'v-iganoh'
 
 from syt import Syt
 from vegenere import Vegenere
+from kassiski import Kassiski
 
 
 key = 'janet'
@@ -26,3 +27,9 @@ encrypted = vegenere.encrypt(plain_text, key)
 print krypto_text
 print encrypted
 assert(krypto_text == encrypted)
+print ''
+
+text = 'abbvvvggggddddd'
+kassiski = Kassiski()
+frequencies = kassiski._char_frequency(text)
+assert([1, 2, 3, 4, 5] == frequencies), 'real %s expected %s' % ([1, 2, 3, 4, 5], frequencies)
