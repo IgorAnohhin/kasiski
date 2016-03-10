@@ -11,7 +11,15 @@ class Vegenere:
     def encrypt(self, plaintext, key):
         plaintext = self.helper.format(plaintext)
         key = self.helper.format(key)
-        print ''
+        kryptotext = ''
+
+        for index, char in enumerate(plaintext):
+            plain_char = ord(char) - 65
+            key_char = ord(key[index % len(key)]) - 65
+            krypto_char = ((plain_char + key_char) % 26) + 65
+            kryptotext += unichr(krypto_char)
+
+        return kryptotext
 
     def decrypt(self, kryptotext, key):
         kryptotext = self.helper.format(kryptotext)

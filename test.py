@@ -17,6 +17,12 @@ print ''
 
 vegenere = Vegenere()
 dekripted = vegenere.decrypt(krypto_text, key)
+print plain_text
 print dekripted
-
 assert(plain_text == dekripted)
+print ''
+
+encrypted = vegenere.encrypt(plain_text, key)
+print krypto_text
+print encrypted
+assert(krypto_text == encrypted)
