@@ -13,7 +13,8 @@ plain_text = 'THEALMONDTREEWASINTENTATIVEBLOSSOMTHEDAYSWERELONGEROFTENENDINGWITH
 data = [165, 235, 275, 285]
 syt = Syt()
 result = syt.compute(data)
-assert(5, result)
+print 'Result : %s' % result
+assert(5 == result)
 print ''
 
 vegenere = Vegenere()
@@ -32,4 +33,21 @@ print ''
 text = 'abbvvvggggddddd'
 kassiski = Kassiski()
 frequencies = kassiski._char_frequency(text)
-assert([1, 2, 3, 4, 5] == frequencies), 'real %s expected %s' % ([1, 2, 3, 4, 5], frequencies)
+frequencies.sort()
+assert(frequencies == [1, 2, 3, 4, 5]), 'real %s expected %s' % (frequencies, [1, 2, 3, 4, 5])
+print ''
+
+kassiski = Kassiski()
+ic = kassiski._calculate_indexes_of_coincidence(krypto_text)
+print ic
+print ''
+
+kassiski = Kassiski()
+estimation = kassiski._key_length(krypto_text)
+print estimation
+print ''
+
+kassiski = Kassiski()
+combinations = kassiski._find_conbinations(krypto_text)
+print combinations
+print ''
