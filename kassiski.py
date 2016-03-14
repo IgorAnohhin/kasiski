@@ -43,31 +43,47 @@ class Kassiski:
 
         return estimation
 
-    def _find_conbinations(self, krypto_text):
+    def _find_positions(self, krypto_text):
         krypto_text = self.helper.format(krypto_text)
-        combinations = {}
+        positions = {}
 
-        for i in range(len(krypto_text)):
+        for i in range(len(krypto_text)-2):
             sub = krypto_text[i:i+3]
-            if sub in combinations:
-                combinations[sub] += 1
+            if sub in positions:
+                positions[sub].append(i+1)
             else:
-                combinations[sub] = 1
+                positions[sub] = [i+1]
 
-        return self._remove_zero_or_one_occurancies(combinations)
+        return self._remove_zero_or_one_occurancies(positions)
 
     @staticmethod
-    def _remove_zero_or_one_occurancies(combination):
-        combination = [{value: combination[value]} for value in combination if combination[value] != 0 and combination[value] != 1]
+    def _calculate_diferencies(positions):
+        diferencies = []
+        if len(positions) > 1:
+            for index in range(len(positions)-1):
+                diferencies.append(positions[index + 1] - positions[index])
+        else:
+            diferencies.append(0)
+        return diferencies
+
+    @staticmethod
+    def _remove_zero_or_one_occurancies(positions):
+        combination = [{value: positions[value]} for value in positions if len(positions[value]) > 1]
         return combination
 
-    def _calculate_occurances_factor(self, combinations):
-        for str in combinations:
-            differencies = 
+    def _calculate_occurances_factor(self, positions):
+        for value in positions:
+            print value
+
+            differencies = self._calculate_diferencies(value[[i for i in value][0]])
+            for diff in differencies:
+                factors = self._calculate_factors(diff)
+
+            print differencies
 
     def compute(self, krypto_text, min_key_length, max_key_length):
         str = []
-        combinations = self._find_conbinations(krypto_text)
+        combinations = self._find_positions(krypto_text)
 
 
         print ''

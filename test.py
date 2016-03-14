@@ -48,6 +48,10 @@ print estimation
 print ''
 
 kassiski = Kassiski()
-combinations = kassiski._find_conbinations(krypto_text)
-print combinations
+positions = kassiski._find_positions(krypto_text)
+print positions[0]
+print positions
+print ''
+factors = kassiski._calculate_occurances_factor(positions)
+print factors
 print ''
