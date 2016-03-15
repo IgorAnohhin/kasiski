@@ -1,16 +1,18 @@
 __author__ = 'v-iganoh'
 
+import math
 from helper import Helper
 
 
 class Kassiski:
 
     def __init__(self):
-        self.helper = Helper()
+        print '__init__'
 
-    def _char_frequency(self, text):
+    @staticmethod
+    def _char_frequency(text):
         frequencies = [0 for i in range(26)]
-        text = self.helper.format(text)
+        text = Helper.format(text)
 
         for index, char in enumerate(text):
             frequencies[ord(char) - 65] += 1
@@ -44,7 +46,7 @@ class Kassiski:
         return estimation
 
     def _find_positions(self, krypto_text):
-        krypto_text = self.helper.format(krypto_text)
+        krypto_text = Helper.format(krypto_text)
         positions = {}
 
         for i in range(len(krypto_text)-2):
@@ -71,19 +73,98 @@ class Kassiski:
         combination = [{value: positions[value]} for value in positions if len(positions[value]) > 1]
         return combination
 
-    def _calculate_occurances_factor(self, positions):
+    @staticmethod
+    def _calculate_factors(number):
+        factors = []
+        i = 1
+        while i <= int(math.sqrt(number)):
+            if number % i == 0:
+                factors.append(i)
+            i += 1
+
+        ln = len(factors)
+        i = ln -1
+        while i >= 0:
+            factors.append(number / factors[i])
+            i -= 1
+
+        return factors
+
+    @staticmethod
+    def _calculate_occurances_factor(positions):
+        occurances_factors = {}
         for value in positions:
-            print value
-
-            differencies = self._calculate_diferencies(value[[i for i in value][0]])
+            differencies = Kassiski._calculate_diferencies(value[[i for i in value][0]])
             for diff in differencies:
-                factors = self._calculate_factors(diff)
+                factors = Kassiski._calculate_factors(diff)
+                for factor in factors:
+                    if factor in occurances_factors:
+                        tfactor = occurances_factors[factor]
+                        occurances_factors[factor] = tfactor + 1
+                    else:
+                        occurances_factors[factor] = 1
 
-            print differencies
+        return occurances_factors
+
+    @staticmethod
+    def _calculate_key_length_estimation(occurances_factors, min_key_length, max_key_length):
+        keys = occurances_factors.keys()
+        max_key = 0
+        max_freq = 0
+
+        for key in keys:
+            if key < min_key_length or key > max_key_length:
+                continue
+
+            freq = occurances_factors.get(key)
+            if freq >= max_freq and min_key_length <= key <= max_key_length:
+                max_freq = freq
+                max_key = key
+
+        if max_key < min_key_length:
+            return min_key_length
+        elif max_key > max_key_length:
+            return max_key_length
+        else:
+            return max_key
+
+    @staticmethod
+    def _array_max_position(arr):
+        max_position = 0
+
+        for index, value in enumerate(arr):
+            if value > arr[max_position]:
+                max_position = index
+
+        return max_position
+
+    @staticmethod
+    def _estimate_key(krypto_text, key_length):
+        cip = [0 for i in range(key_length)]
+        key = ''
+
+        i = 0
+        while i < key_length:
+            cip[i] = ''
+            i += 1
+
+        i = 0
+        while i < len(krypto_text):
+            cip[i % key_length] += krypto_text[i]
+            i += 1
+
+        i = 0
+        while i < key_length:
+            freq = Kassiski._char_frequency(cip[i])
+            key += unichr((Kassiski._array_max_position(freq) - 4) + 65)
+            i += 1
+
+        return key
 
     def compute(self, krypto_text, min_key_length, max_key_length):
-        str = []
-        combinations = self._find_positions(krypto_text)
+        positions = self._find_positions(krypto_text)
+        occurances_factors = Kassiski._calculate_occurances_factor(positions)
 
+        key_lehgth_estimation = Kassiski._calculate_key_length_estimation(occurances_factors, min_key_length, max_key_length)
 
-        print ''
+        return key_lehgth_estimation
