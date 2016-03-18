@@ -138,20 +138,20 @@ class Kassiski:
         return max_position
 
     @staticmethod
-    def _get_keys(key_length, cip_text):
+    def _get_keys(key_length, cip_text, keys_count):
         keys = {}
         i = 0
         while i < key_length:
             freq = Kassiski._char_frequency(cip_text[i])
             j = 0
-            while len(freq) > 0:
+            while j < keys_count:
                 ord_key = Kassiski._array_max_position(freq)
                 key = unichr((ord_key - 4) + 65)
                 if j in keys:
                     keys[j] += key
                 else:
                     keys[j] = key
-                freq.remove(freq[ord_key])
+                freq[ord_key] = 0
                 j += 1
 
             i += 1
@@ -159,7 +159,7 @@ class Kassiski:
         return keys
 
     @staticmethod
-    def _estimate_key(krypto_text, key_length):
+    def _estimate_key(krypto_text, key_length, keys_count):
         cip = [0 for i in range(key_length)]
 
         i = 0
@@ -171,16 +171,15 @@ class Kassiski:
         while i < len(krypto_text):
             cip[i % key_length] += krypto_text[i]
             i += 1
-
-        keys = Kassiski._get_keys(key_length, cip)
+        keys = Kassiski._get_keys(key_length, cip, keys_count)
 
         return keys
 
-    def compute(self, krypto_text, min_key_length, max_key_length):
+    def compute(self, krypto_text, min_key_length, max_key_length, keys_count):
         positions = self._find_positions(krypto_text)
         occurances_factors = Kassiski._calculate_occurances_factor(positions)
 
         key_lehgth_estimation = Kassiski._calculate_key_length_estimation(occurances_factors, min_key_length, max_key_length)
-        dkey = Kassiski._estimate_key(krypto_text, key_lehgth_estimation)
+        dkey = Kassiski._estimate_key(krypto_text, key_lehgth_estimation, keys_count)
 
         return dkey
